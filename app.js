@@ -59,7 +59,8 @@ function fetchNameServers(domain, callback) {
 
 // ... (previous code remains the same)
 
-// Function to fetch registrar information for the given domain
+// ... (previous code remains the same)
+
 function fetchRegistrar(domain, callback) {
     whois.lookup(domain, (err, data) => {
         if (err) {
@@ -68,9 +69,9 @@ function fetchRegistrar(domain, callback) {
             return;
         }
 
-        console.log('Raw WHOIS data:', data); // Log raw data for debugging
+        console.log(`Raw WHOIS data for ${domain}:`);
+        console.log(data);
 
-        // Try multiple patterns to extract registrar information
         const patterns = [
             /Registrar:\s*(.+)/i,
             /Registrar URL:\s*(.+)/i,
@@ -84,14 +85,13 @@ function fetchRegistrar(domain, callback) {
         for (let pattern of patterns) {
             const match = data.match(pattern);
             if (match) {
-                console.log('Matched pattern:', pattern);
-                console.log('Extracted registrar info:', match[1].trim());
+                console.log(`Matched pattern for ${domain}:`, pattern);
+                console.log(`Extracted registrar info for ${domain}:`, match[1].trim());
                 return callback(match[1].trim());
             }
         }
 
-        // If no match found, log sections of the WHOIS data for debugging
-        console.log('No registrar match found. WHOIS data sections:');
+        console.log(`No registrar match found for ${domain}. WHOIS data sections:`);
         const sections = data.split('\n\n');
         sections.forEach((section, index) => {
             console.log(`Section ${index + 1}:`);
@@ -102,7 +102,6 @@ function fetchRegistrar(domain, callback) {
     });
 }
 
-// ... (rest of the code remains the same)
 // Function to fetch hosting provider based on the name server
 function fetchHostingProvider(nameServer) {
     // Convert nameServer to lowercase for case-insensitive matching
