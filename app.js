@@ -66,8 +66,10 @@ function fetchRegistrar(domain, callback) {
             return;
         }
 
-        // Extract registrar information
-        const registrarMatch = data.match(/Registrar:\s*(.+)/i);
+        console.log(`WHOIS data for ${domain}:`, data); // Log the entire WHOIS data
+
+        // Extract registrar information (handles variations like "Sponsoring Registrar")
+        const registrarMatch = data.match(/(?:Registrar|Sponsoring Registrar):\s*(.+)/i);
         if (registrarMatch) {
             callback(registrarMatch[1].trim());
         } else {
@@ -126,6 +128,6 @@ function fetchHostingProvider(nameServer) {
         return 'Unknown Provider';
     }
 }
+
 // Start the server
 module.exports = app;
-
