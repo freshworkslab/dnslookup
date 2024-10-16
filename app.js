@@ -66,15 +66,25 @@ function fetchRegistrar(domain, callback) {
             return;
         }
 
-        console.log(`WHOIS data for ${domain}:`, data); // Log the entire WHOIS data
+        console.log('Raw WHOIS data:', data); // Log raw data for debugging
 
-        // Extract registrar information (handles variations like "Sponsoring Registrar")
-        const registrarMatch = data.match(/(?:Registrar|Sponsoring Registrar):\s*(.+)/i);
-        if (registrarMatch) {
-            callback(registrarMatch[1].trim());
-        } else {
-            callback('No registrar information found.');
+        // Try multiple patterns to extract registrar information
+        const patterns = [
+            /Registrar:\s*(.+)/i,
+            /Registrar URL:\s*(.+)/i,
+            /Registrar IANA ID:\s*(.+)/i,
+            /Sponsoring Registrar:\s*(.+)/i,
+            /Registry Registrant ID:\s*(.+)/i
+        ];
+
+        for (let pattern of patterns) {
+            const match = data.match(pattern);
+            if (match) {
+                return callback(match[1].trim());
+            }
         }
+
+        callback('No registrar information found.');
     });
 }
 
