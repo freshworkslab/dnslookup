@@ -24,22 +24,16 @@ app.get('/', (req, res) => {
 app.post('/lookup', (req, res) => {
     const domain = req.body.domain;
     
-    // Fetch name servers and registrar information
+   // Fetch name servers and registrar information
     fetchNameServers(domain, (nameServers) => {
         fetchRegistrar(domain, (registrar) => {
-            const hostingProviders = nameServers.map(ns => fetchHostingProvider(ns)).join('<br>');
-            res.send(`
-                <h2>Domain: ${domain}</h2>
-                <h3>Registrar:</h3>
-                <p>${registrar}</p>
-                <h3>Name Servers:</h3>
-                <ul>
-                    ${nameServers.map(ns => `<li>${ns}</li>`).join('')}
-                </ul>
-                <h3>DNS Hosting Providers:</h3>
-                <p>${hostingProviders}</p>
-                <a href="/">Go Back</a>
-            `);
+            const hostingProviders = nameServers.map(ns => fetchHostingProvider(ns));
+            res.json({
+                domain,
+                registrar,
+                nameServers,
+                hostingProviders
+            });
         });
     });
 });
@@ -57,6 +51,7 @@ function fetchNameServers(domain, callback) {
     });
 }
 
+// Function to fetch registrar information for the given domain
 function fetchRegistrar(domain, callback) {
     whois.lookup(domain, (err, data) => {
         if (err) {
@@ -65,40 +60,15 @@ function fetchRegistrar(domain, callback) {
             return;
         }
 
-        console.log(`Raw WHOIS data for ${domain}:`);
-        console.log(data);
-
-        // Try to match different patterns that could indicate the registrar
-        const patterns = [
-            /Registrar:\s*(.+)/i,
-            /Sponsoring Registrar:\s*(.+)/i,
-            /Registrar URL:\s*(.+)/i,
-            /Registrar IANA ID:\s*(.+)/i,
-            /Registrar WHOIS Server:\s*(.+)/i,
-            /Registration Service Provider:\s*(.+)/i,
-            /Registrar Organization:\s*(.+)/i
-        ];
-
-        for (let pattern of patterns) {
-            const match = data.match(pattern);
-            if (match) {
-                console.log(`Matched pattern for ${domain}:`, pattern);
-                console.log(`Extracted registrar info for ${domain}:`, match[1].trim());
-                return callback(match[1].trim());
-            }
+        // Extract registrar information
+        const registrarMatch = data.match(/Registrar:\s*(.+)/i);
+        if (registrarMatch) {
+            callback(registrarMatch[1].trim());
+        } else {
+            callback('No registrar information found.');
         }
-
-        console.log(`No registrar match found for ${domain}. WHOIS data sections:`);
-        const sections = data.split('\n\n');
-        sections.forEach((section, index) => {
-            console.log(`Section ${index + 1}:`);
-            console.log(section);
-        });
-
-        callback('No registrar information found.');
     });
 }
-
 
 // Function to fetch hosting provider based on the name server
 function fetchHostingProvider(nameServer) {
@@ -151,5 +121,4 @@ function fetchHostingProvider(nameServer) {
     }
 }
 
-// Start the server
 module.exports = app;
