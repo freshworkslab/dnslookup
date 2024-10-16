@@ -57,6 +57,8 @@ function fetchNameServers(domain, callback) {
     });
 }
 
+// ... (previous code remains the same)
+
 // Function to fetch registrar information for the given domain
 function fetchRegistrar(domain, callback) {
     whois.lookup(domain, (err, data) => {
@@ -74,20 +76,33 @@ function fetchRegistrar(domain, callback) {
             /Registrar URL:\s*(.+)/i,
             /Registrar IANA ID:\s*(.+)/i,
             /Sponsoring Registrar:\s*(.+)/i,
-            /Registry Registrant ID:\s*(.+)/i
+            /Registry Registrant ID:\s*(.+)/i,
+            /Registrar WHOIS Server:\s*(.+)/i,
+            /Registration Service Provider:\s*(.+)/i
         ];
 
         for (let pattern of patterns) {
             const match = data.match(pattern);
             if (match) {
+                console.log('Matched pattern:', pattern);
+                console.log('Extracted registrar info:', match[1].trim());
                 return callback(match[1].trim());
             }
         }
+
+        // If no match found, log sections of the WHOIS data for debugging
+        console.log('No registrar match found. WHOIS data sections:');
+        const sections = data.split('\n\n');
+        sections.forEach((section, index) => {
+            console.log(`Section ${index + 1}:`);
+            console.log(section);
+        });
 
         callback('No registrar information found.');
     });
 }
 
+// ... (rest of the code remains the same)
 // Function to fetch hosting provider based on the name server
 function fetchHostingProvider(nameServer) {
     // Convert nameServer to lowercase for case-insensitive matching
