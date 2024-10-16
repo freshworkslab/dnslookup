@@ -57,10 +57,6 @@ function fetchNameServers(domain, callback) {
     });
 }
 
-// ... (previous code remains the same)
-
-// ... (previous code remains the same)
-
 function fetchRegistrar(domain, callback) {
     whois.lookup(domain, (err, data) => {
         if (err) {
@@ -72,14 +68,15 @@ function fetchRegistrar(domain, callback) {
         console.log(`Raw WHOIS data for ${domain}:`);
         console.log(data);
 
+        // Try to match different patterns that could indicate the registrar
         const patterns = [
             /Registrar:\s*(.+)/i,
+            /Sponsoring Registrar:\s*(.+)/i,
             /Registrar URL:\s*(.+)/i,
             /Registrar IANA ID:\s*(.+)/i,
-            /Sponsoring Registrar:\s*(.+)/i,
-            /Registry Registrant ID:\s*(.+)/i,
             /Registrar WHOIS Server:\s*(.+)/i,
-            /Registration Service Provider:\s*(.+)/i
+            /Registration Service Provider:\s*(.+)/i,
+            /Registrar Organization:\s*(.+)/i
         ];
 
         for (let pattern of patterns) {
@@ -101,6 +98,7 @@ function fetchRegistrar(domain, callback) {
         callback('No registrar information found.');
     });
 }
+
 
 // Function to fetch hosting provider based on the name server
 function fetchHostingProvider(nameServer) {
