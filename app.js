@@ -24,16 +24,22 @@ app.get('/', (req, res) => {
 app.post('/lookup', (req, res) => {
     const domain = req.body.domain;
     
-   // Fetch name servers and registrar information
+    // Fetch name servers and registrar information
     fetchNameServers(domain, (nameServers) => {
         fetchRegistrar(domain, (registrar) => {
-            const hostingProviders = nameServers.map(ns => fetchHostingProvider(ns));
-            res.json({
-                domain,
-                registrar,
-                nameServers,
-                hostingProviders
-            });
+            const hostingProviders = nameServers.map(ns => fetchHostingProvider(ns)).join('<br>');
+            res.send(`
+                <h2>Domain: ${domain}</h2>
+                <h3>Registrar:</h3>
+                <p>${registrar}</p>
+                <h3>Name Servers:</h3>
+                <ul>
+                    ${nameServers.map(ns => `<li>${ns}</li>`).join('')}
+                </ul>
+                <h3>DNS Hosting Providers:</h3>
+                <p>${hostingProviders}</p>
+                <a href="/">Go Back</a>
+            `);
         });
     });
 });
@@ -60,8 +66,10 @@ function fetchRegistrar(domain, callback) {
             return;
         }
 
-        // Extract registrar information
-        const registrarMatch = data.match(/Registrar:\s*(.+)/i);
+        console.log(`WHOIS data for ${domain}:`, data); // Log the entire WHOIS data
+
+        // Extract registrar information (handles variations like "Sponsoring Registrar")
+        const registrarMatch = data.match(/(?:Registrar|Sponsoring Registrar):\s*(.+)/i);
         if (registrarMatch) {
             callback(registrarMatch[1].trim());
         } else {
@@ -121,4 +129,5 @@ function fetchHostingProvider(nameServer) {
     }
 }
 
+// Start the server
 module.exports = app;
