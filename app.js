@@ -42,7 +42,6 @@ app.post('/lookup', (req, res) => {
             `);
         });
     });
-});
 
 // Function to fetch name servers for the given domain
 function fetchNameServers(domain, callback) {
