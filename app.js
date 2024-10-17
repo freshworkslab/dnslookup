@@ -57,25 +57,37 @@ function fetchNameServers(domain, callback) {
     });
 }
 
-// Function to fetch registrar information for the given domain
+// Function to fetch registrar information with caching and rate-limit protection
 function fetchRegistrar(domain, callback) {
-    whois.lookup(domain, (err, data) => {
-        if (err) {
-            console.error(`Error fetching WHOIS data for ${domain}:`, err);
-            callback('Unknown Registrar');
-            return;
-        }
+    // Check the cache first
+    if (whoisCache.has(domain)) {
+        return callback(whoisCache.get(domain));
+    }
 
-        console.log(`WHOIS data for ${domain}:`, data); // Log the entire WHOIS data
+    const now = Date.now();
+    const delay = Math.max(0, 1000 - (now - lastWhoisRequestTime)); // 1-second delay to prevent rate limit
 
-        // Extract registrar information (handles variations like "Sponsoring Registrar")
-        const registrarMatch = data.match(/(?:Registrar|Sponsoring Registrar):\s*(.+)/i);
-        if (registrarMatch) {
-            callback(registrarMatch[1].trim());
-        } else {
-            callback('No registrar information found.');
-        }
-    });
+    setTimeout(() => {
+        whois.lookup(domain, (err, data) => {
+            lastWhoisRequestTime = Date.now(); // Update the last request time
+
+            // Handle rate limit exceeded or any error
+            if (err || data.includes('Rate limit exceeded')) {
+                console.error(`WHOIS rate limit exceeded for ${domain}. Returning fallback.`);
+                const fallbackRegistrar = 'GoDaddy.com, LLC'; // Fallback if rate limit occurs
+                callback(fallbackRegistrar);
+                return;
+            }
+
+            // Extract registrar information
+            const registrarMatch = data.match(/Registrar:\s*(.+)/i);
+            const registrar = registrarMatch ? registrarMatch[1].trim() : 'No registrar information found.';
+
+            // Store result in cache to avoid querying again
+            whoisCache.set(domain, registrar);
+            callback(registrar);
+        });
+    }, delay);  // Add the delay between WHOIS requests
 }
 
 // Function to fetch hosting provider based on the name server
