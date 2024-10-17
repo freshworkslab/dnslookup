@@ -124,10 +124,47 @@ function fetchHostingProvider(nameServer) {
         return 'Netlify';
     } else if (ns.includes('vercel')) {
         return 'Vercel';
+    } else if (ns.includes('rackspace')) {
+        return 'Rackspace';
+    } else if (ns.includes('akamai')) {
+        return 'Akamai';
+    } else if (ns.includes('pantheon')) {
+        return 'Pantheon';
+    } else if (ns.includes('liquidweb')) {
+        return 'Liquid Web';
+    } else if (ns.includes('cloudsigma')) {
+        return 'CloudSigma';
+    } else if (ns.includes('kinsta')) {
+        return 'Kinsta';
+    } else if (ns.includes('heroku')) {
+        return 'Heroku';
+    } else if (ns.includes('inmotionhosting')) {
+        return 'InMotion Hosting';
+    } else if (ns.includes('scaleway')) {
+        return 'Scaleway';
+    } else if (ns.includes('openstack')) {
+        return 'OpenStack';
+    } else if (ns.includes('lightsail')) {
+        return 'Amazon Lightsail';
+    } else if (ns.includes('backblaze')) {
+        return 'Backblaze';
+    } else if (ns.includes('dreamcompute')) {
+        return 'DreamCompute';
+    } else if (ns.includes('vps')) {
+        return 'VPS Hosting (Various)';
+    } else if (ns.includes('exoscale')) {
+        return 'Exoscale';
+    } else if (ns.includes('porkbun')) {
+        return 'Porkbun';
+    } else if (ns.includes('vultr')) {
+        return 'Vultr';
+    } else if (ns.includes('fleek')) {
+        return 'Fleek';
     } else {
         return 'Unknown Provider';
     }
 }
+
 
 // Start the server
 module.exports = app;
