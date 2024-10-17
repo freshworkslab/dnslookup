@@ -90,7 +90,7 @@ function fetchHostingProvider(nameServer) {
     // Define a map of hosting providers to their CNAME record help documentation URLs
     const helpDocs = {
         'Amazon Web Services (AWS)': 'https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating.html#resource-record-sets-creating-cname',
-        'Cloudflare': 'https://developers.cloudflare.com/dns/manage-dns-records/create-dns-records#add-a-cname-record',
+        'Cloudflare': 'https://developers.cloudflare.com/dns/manage-dns-records/how-to/create-dns-records/',
         'DigitalOcean': 'https://docs.digitalocean.com/products/networking/dns/how-to/manage-records/#cname-record',
         'GoDaddy': 'https://www.godaddy.com/help/add-a-cname-record-19236',
         'Google Cloud DNS': 'https://cloud.google.com/dns/docs/records',
