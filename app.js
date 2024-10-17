@@ -82,7 +82,7 @@ callback('No registrar information found.');
 function fetchHostingProvider(nameServer) {
     // Convert nameServer to lowercase for case-insensitive matching
     const ns = nameServer.toLowerCase();
-
+    
     // Extended logic for hosting provider identification
     if (ns.includes('awsdns')) {
         return 'Amazon Web Services (AWS)';
@@ -113,6 +113,8 @@ function fetchHostingProvider(nameServer) {
     } else if (ns.includes('wpengine')) {
         return 'WP Engine';
     } else if (ns.includes('1and1')) {
+        return '1&1 IONOS';
+    } else if (ns.includes('ionos')) {
         return '1&1 IONOS';
     } else if (ns.includes('hetzner')) {
         return 'Hetzner';
@@ -156,14 +158,96 @@ function fetchHostingProvider(nameServer) {
         return 'Exoscale';
     } else if (ns.includes('porkbun')) {
         return 'Porkbun';
-    } else if (ns.includes('gandi')) {
-        return 'Gandi SAS'; // Adding Gandi hosting provider recognition
+    } else if (ns.includes('fleek')) {
+        return 'Fleek';
+    } else if (ns.includes('yahoo')) {
+        return 'Yahoo.com';
+    } else if (ns.includes('hostinger')) {
+        return 'Hostinger';
+    } else if (ns.includes('a2hosting')) {
+        return 'A2 Hosting';
+    } else if (ns.includes('fatcow')) {
+        return 'FatCow';
+    } else if (ns.includes('hostwinds')) {
+        return 'Hostwinds';
+    } else if (ns.includes('ipage')) {
+        return 'iPage';
+    } else if (ns.includes('greengeeks')) {
+        return 'GreenGeeks';
+    } else if (ns.includes('hostmonster')) {
+        return 'HostMonster';
+    } else if (ns.includes('justhost')) {
+        return 'JustHost';
+    } else if (ns.includes('webhostingpad')) {
+        return 'Web Hosting Pad';
+    } else if (ns.includes('interserver')) {
+        return 'InterServer';
+    } else if (ns.includes('hostpapa')) {
+        return 'HostPapa';
+    } else if (ns.includes('arvixe')) {
+        return 'Arvixe';
+    } else if (ns.includes('nixihost')) {
+        return 'NixiHost';
+    } else if (ns.includes('hawkhost')) {
+        return 'HawkHost';
+    } else if (ns.includes('mochahost')) {
+        return 'MochaHost';
+    } else if (ns.includes('tmdisp')) {
+        return 'TMDHosting';
+    } else if (ns.includes('fastcomet')) {
+        return 'FastComet';
+    } else if (ns.includes('nexcess')) {
+        return 'Nexcess';
+    } else if (ns.includes('skysilk')) {
+        return 'SkySilk';
+    } else if (ns.includes('kamatera')) {
+        return 'Kamatera';
+    } else if (ns.includes('cloudways')) {
+        return 'Cloudways';
+    } else if (ns.includes('renderhosting')) {
+        return 'Render';
+    } else if (ns.includes('flyio')) {
+        return 'Fly.io';
+    } else if (ns.includes('digitalocean-basic')) {
+        return 'DigitalOcean Basic';
+    } else if (ns.includes('upcloud')) {
+        return 'UpCloud';
+    } else if (ns.includes('serverpilot')) {
+        return 'ServerPilot';
+    } else if (ns.includes('runcloud')) {
+        return 'RunCloud';
+    } else if (ns.includes('gridpane')) {
+        return 'GridPane';
+    } else if (ns.includes('ploi')) {
+        return 'Ploi';
+    } else if (ns.includes('forge')) {
+        return 'Laravel Forge';
+    } else if (ns.includes('spinupwp')) {
+        return 'SpinupWP';
+    } else if (ns.includes('pagely')) {
+        return 'Pagely';
+    } else if (ns.includes('pressable')) {
+        return 'Pressable';
+    } else if (ns.includes('closte')) {
+        return 'Closte';
+    } else if (ns.includes('convesio')) {
+        return 'Convesio';
+    } else if (ns.includes('rocket')) {
+        return 'Rocket.net';
+    } else if (ns.includes('pressidium')) {
+        return 'Pressidium';
+    } else if (ns.includes('nestify')) {
+        return 'Nestify';
+    } else if (ns.includes('savvii')) {
+        return 'Savvii';
+    } else if (ns.includes('docksal')) {
+        return 'Docksal';
+    } else if (ns.includes('lando')) {
+        return 'Lando';
     } else {
         return 'Unknown Provider';
     }
 }
-
-
 
 // Start the server
 module.exports = app;
