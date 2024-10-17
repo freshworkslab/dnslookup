@@ -11,164 +11,176 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve the HTML form
 app.get('/', (req, res) => {
-res.send(`
-       <form action="/lookup" method="POST">
-           <label for="domain">Enter Domain Name:</label>
-           <input type="text" id="domain" name="domain" required>
-           <button type="submit">Fetch DNS Hosting Provider</button>
-       </form>
-   `);
+    res.send(`
+        <form action="/lookup" method="POST">
+            <label for="domain">Enter Domain Name:</label>
+            <input type="text" id="domain" name="domain" required>
+            <button type="submit">Fetch DNS Hosting Provider</button>
+        </form>
+    `);
 });
 
 // Route to handle form submission
 app.post('/lookup', (req, res) => {
-const domain = req.body.domain;
+    const domain = req.body.domain;
 
-// Fetch name servers and registrar information
-fetchNameServers(domain, (nameServers) => {
-fetchRegistrar(domain, (registrar) => {
-const hostingProviders = nameServers.map(ns => fetchHostingProvider(ns)).join('<br>');
-res.send(`
-               <h2>Domain: ${domain}</h2>
-               <h3>Registrar:</h3>
-               <p>${registrar}</p>
-               <h3>Name Servers:</h3>
-               <ul>
-                   ${nameServers.map(ns => `<li>${ns}</li>`).join('')}
-               </ul>
-               <h3>DNS Hosting Providers:</h3>
-               <p>${hostingProviders}</p>
-               <a href="/">Go Back</a>
-           `);
-});
-});
+    // Fetch name servers and registrar information
+    fetchNameServers(domain, (nameServers) => {
+        fetchRegistrar(domain, (registrar) => {
+            const hostingProviders = nameServers.map(ns => {
+                const providerInfo = fetchHostingProvider(ns);
+                return `<a href="${providerInfo.helpLink}" target="_blank">${providerInfo.provider}</a>`;
+            }).join('<br>');
+
+            res.send(`
+                <h2>Domain: ${domain}</h2>
+                <h3>Registrar:</h3>
+                <p>${registrar}</p>
+                <h3>Name Servers:</h3>
+                <ul>
+                    ${nameServers.map(ns => `<li>${ns}</li>`).join('')}
+                </ul>
+                <h3>DNS Hosting Providers:</h3>
+                <p>${hostingProviders}</p>
+                <a href="/">Go Back</a>
+            `);
+        });
+    });
 });
 
 // Function to fetch name servers for the given domain
 function fetchNameServers(domain, callback) {
-dns.resolveNs(domain, (err, nameServers) => {
-if (err) {
-console.error(`Error fetching name servers for ${domain}:`, err);
-callback([]);
-return;
-}
-console.log(`Name Servers for ${domain}:`, nameServers);
-callback(nameServers);
-});
+    dns.resolveNs(domain, (err, nameServers) => {
+        if (err) {
+            console.error(`Error fetching name servers for ${domain}:`, err);
+            callback([]);
+            return;
+        }
+        console.log(`Name Servers for ${domain}:`, nameServers);
+        callback(nameServers);
+    });
 }
 
 // Function to fetch registrar information for the given domain
 function fetchRegistrar(domain, callback) {
-whois.lookup(domain, (err, data) => {
-if (err) {
-console.error(`Error fetching WHOIS data for ${domain}:`, err);
-callback('Unknown Registrar');
-return;
+    whois.lookup(domain, (err, data) => {
+        if (err) {
+            console.error(`Error fetching WHOIS data for ${domain}:`, err);
+            callback('Unknown Registrar');
+            return;
+        }
+
+        console.log(`WHOIS data for ${domain}:`, data); // Log the entire WHOIS data
+
+        // Extract registrar information (handles variations like "Sponsoring Registrar")
+        const registrarMatch = data.match(/(?:Registrar|Sponsoring Registrar):\s*(.+)/i);
+        if (registrarMatch) {
+            callback(registrarMatch[1].trim());
+        } else {
+            callback('No registrar information found.');
+        }
+    });
 }
 
-console.log(`WHOIS data for ${domain}:`, data); // Log the entire WHOIS data
-
-// Extract registrar information (handles variations like "Sponsoring Registrar")
-const registrarMatch = data.match(/(?:Registrar|Sponsoring Registrar):\s*(.+)/i);
-if (registrarMatch) {
-callback(registrarMatch[1].trim());
-} else {
-callback('No registrar information found.');
-}
-});
-}
-
-// Function to fetch hosting provider based on the name server
+// Function to fetch hosting provider based on the name server and return provider with a help link
 function fetchHostingProvider(nameServer) {
     // Convert nameServer to lowercase for case-insensitive matching
     const ns = nameServer.toLowerCase();
-    
+
+    // Define a map of hosting providers to their DNS record help documentation URLs
+    const helpDocs = {
+        'Amazon Web Services (AWS)': 'https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating.html',
+        'Cloudflare': 'https://developers.cloudflare.com/dns/manage-dns-records/',
+        'DigitalOcean': 'https://docs.digitalocean.com/products/networking/dns/how-to/manage-records/',
+        'GoDaddy': 'https://www.godaddy.com/help/add-a-dns-record-19238',
+        'Google Cloud DNS': 'https://cloud.google.com/dns/docs/records',
+        'Bluehost': 'https://www.bluehost.com/help/article/dns-records-how-to-edit-dns-in-your-bluehost-account',
+        'HostGator': 'https://www.hostgator.com/help/article/dns-management-in-the-customer-portal',
+        'Namecheap': 'https://www.namecheap.com/support/knowledgebase/article.aspx/9602/33/how-do-i-set-up-dns-records-for-my-domain',
+        'Microsoft Azure': 'https://learn.microsoft.com/en-us/azure/dns/dns-getstarted-portal',
+        'OVH': 'https://docs.ovh.com/gb/en/domains/web_hosting_how_to_edit_my_dns_zone/',
+        'Linode': 'https://www.linode.com/docs/guides/dns-records-an-introduction/',
+        'DreamHost': 'https://help.dreamhost.com/hc/en-us/articles/216016197-Viewing-DNS-Records',
+        'SiteGround': 'https://www.siteground.com/kb/how_to_set_your_dns_records/',
+        'WP Engine': 'https://wpengine.com/support/dns/',
+        '1&1 IONOS': 'https://www.ionos.com/help/domains/configuring-dns-records-for-your-domain/',
+        'Hetzner': 'https://docs.hetzner.com/dns-console/general/dns-management/',
+        'Vultr': 'https://www.vultr.com/docs/how-to-manage-dns-records-in-vultr/',
+        'Fastly': 'https://developer.fastly.com/learning/concepts/dns/',
+        'Netlify': 'https://docs.netlify.com/domains-https/custom-domains/configure-external-dns/',
+        'Vercel': 'https://vercel.com/docs/concepts/projects/domains/configure-a-domain',
+        'Rackspace': 'https://support.rackspace.com/how-to/managing-your-dns-records-in-the-cloud-control-panel/',
+        'Akamai': 'https://community.akamai.com/customers/s/article/DNS-Management-Overview?language=en_US',
+        'Pantheon': 'https://pantheon.io/docs/dns',
+        'Liquid Web': 'https://www.liquidweb.com/kb/manage-dns-records-in-cpanel/',
+        'Oracle Dyn': 'https://help.dyn.com/standard-dns-record-types/',
+        'Yahoo.com': 'https://help.smallbusiness.yahoo.net/s/article/SLN20450',
+        'Porkbun': 'https://kb.porkbun.com/article/92-how-to-set-your-dns-records',
+        'Fleek': 'https://docs.fleek.co/hosting/domain-management/',
+        // Add more providers and links as needed
+    };
+
     // Extended logic for hosting provider identification
     if (ns.includes('awsdns')) {
-        return 'Amazon Web Services (AWS)';
+        return { provider: 'Amazon Web Services (AWS)', helpLink: helpDocs['Amazon Web Services (AWS)'] };
     } else if (ns.includes('cloudflare')) {
-        return 'Cloudflare';
+        return { provider: 'Cloudflare', helpLink: helpDocs['Cloudflare'] };
     } else if (ns.includes('digitalocean')) {
-        return 'DigitalOcean';
+        return { provider: 'DigitalOcean', helpLink: helpDocs['DigitalOcean'] };
     } else if (ns.includes('domaincontrol')) {
-        return 'GoDaddy';
+        return { provider: 'GoDaddy', helpLink: helpDocs['GoDaddy'] };
     } else if (ns.includes('google')) {
-        return 'Google Cloud DNS';
+        return { provider: 'Google Cloud DNS', helpLink: helpDocs['Google Cloud DNS'] };
     } else if (ns.includes('bluehost')) {
-        return 'Bluehost';
+        return { provider: 'Bluehost', helpLink: helpDocs['Bluehost'] };
     } else if (ns.includes('hostgator')) {
-        return 'HostGator';
+        return { provider: 'HostGator', helpLink: helpDocs['HostGator'] };
     } else if (ns.includes('namecheap')) {
-        return 'Namecheap';
+        return { provider: 'Namecheap', helpLink: helpDocs['Namecheap'] };
     } else if (ns.includes('azure-dns')) {
-        return 'Microsoft Azure';
+        return { provider: 'Microsoft Azure', helpLink: helpDocs['Microsoft Azure'] };
     } else if (ns.includes('ovh')) {
-        return 'OVH';
+        return { provider: 'OVH', helpLink: helpDocs['OVH'] };
     } else if (ns.includes('linode')) {
-        return 'Linode';
+        return { provider: 'Linode', helpLink: helpDocs['Linode'] };
     } else if (ns.includes('dreamhost')) {
-        return 'DreamHost';
+        return { provider: 'DreamHost', helpLink: helpDocs['DreamHost'] };
     } else if (ns.includes('siteground')) {
-        return 'SiteGround';
+        return { provider: 'SiteGround', helpLink: helpDocs['SiteGround'] };
     } else if (ns.includes('wpengine')) {
-        return 'WP Engine';
-    } else if (ns.includes('1and1')) {
-        return '1&1 IONOS';
-    } else if (ns.includes('ionos')) {
-        return '1&1 IONOS';
+        return { provider: 'WP Engine', helpLink: helpDocs['WP Engine'] };
+    } else if (ns.includes('1and1') || ns.includes('ionos')) {
+        return { provider: '1&1 IONOS', helpLink: helpDocs['1&1 IONOS'] };
     } else if (ns.includes('hetzner')) {
-        return 'Hetzner';
+        return { provider: 'Hetzner', helpLink: helpDocs['Hetzner'] };
     } else if (ns.includes('vultr')) {
-        return 'Vultr';
+        return { provider: 'Vultr', helpLink: helpDocs['Vultr'] };
     } else if (ns.includes('fastly')) {
-        return 'Fastly';
+        return { provider: 'Fastly', helpLink: helpDocs['Fastly'] };
     } else if (ns.includes('netlify')) {
-        return 'Netlify';
+        return { provider: 'Netlify', helpLink: helpDocs['Netlify'] };
     } else if (ns.includes('vercel')) {
-        return 'Vercel';
+        return { provider: 'Vercel', helpLink: helpDocs['Vercel'] };
     } else if (ns.includes('rackspace')) {
-        return 'Rackspace';
+        return { provider: 'Rackspace', helpLink: helpDocs['Rackspace'] };
     } else if (ns.includes('akamai')) {
-        return 'Akamai';
+        return { provider: 'Akamai', helpLink: helpDocs['Akamai'] };
     } else if (ns.includes('pantheon')) {
-        return 'Pantheon';
+        return { provider: 'Pantheon', helpLink: helpDocs['Pantheon'] };
     } else if (ns.includes('liquidweb')) {
-        return 'Liquid Web';
-    } else if (ns.includes('cloudsigma')) {
-        return 'CloudSigma';
-    } else if (ns.includes('kinsta')) {
-        return 'Kinsta';
-    } else if (ns.includes('heroku')) {
-        return 'Heroku';
-    } else if (ns.includes('inmotionhosting')) {
-        return 'InMotion Hosting';
-    } else if (ns.includes('scaleway')) {
-        return 'Scaleway';
-    } else if (ns.includes('openstack')) {
-        return 'OpenStack';
-    } else if (ns.includes('lightsail')) {
-        return 'Amazon Lightsail';
-    } else if (ns.includes('backblaze')) {
-        return 'Backblaze';
-    } else if (ns.includes('dreamcompute')) {
-        return 'DreamCompute';
-    } else if (ns.includes('vps')) {
-        return 'VPS Hosting (Various)';
-    } else if (ns.includes('exoscale')) {
-        return 'Exoscale';
-    } else if (ns.includes('porkbun')) {
-        return 'Porkbun';
-    } else if (ns.includes('fleek')) {
-        return 'Fleek';
-    } else if (ns.includes('yahoo')) {
-        return 'Yahoo.com';
+        return { provider: 'Liquid Web', helpLink: helpDocs['Liquid Web'] };
     } else if (ns.includes('dyn.com')) {
-        return 'Oracle Dyn'; // Added Oracle Dyn
+        return { provider: 'Oracle Dyn', helpLink: helpDocs['Oracle Dyn'] };
+    } else if (ns.includes('yahoo')) {
+        return { provider: 'Yahoo.com', helpLink: helpDocs['Yahoo.com'] };
+    } else if (ns.includes('porkbun')) {
+        return { provider: 'Porkbun', helpLink: helpDocs['Porkbun'] };
+    } else if (ns.includes('fleek')) {
+        return { provider: 'Fleek', helpLink: helpDocs['Fleek'] };
     } else {
-        return 'Unknown Provider';
+        return { provider: 'Unknown Provider', helpLink: '#' }; // No help link for unknown providers
     }
 }
-
 
 // Start the server
 module.exports = app;
