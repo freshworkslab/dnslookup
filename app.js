@@ -57,26 +57,70 @@ function fetchNameServers(domain, callback) {
     });
 }
 
-// Function to fetch registrar information for the given domain
-function fetchRegistrar(domain, callback) {
-    whois.lookup(domain, (err, data) => {
+// Fetch name servers and registrar information
+    fetchNameServers(domain, (nameServers) => {
+        fetchRegistrar(domain, (registrar) => {
+            const hostingProviders = nameServers.map(ns => fetchHostingProvider(ns));
+            res.json({
+                domain,
+                registrar,
+                nameServers,
+                hostingProviders
+            });
+        });
+    });
+});
+
+// Function to fetch name servers for the given domain
+function fetchNameServers(domain, callback) {
+    dns.resolveNs(domain, (err, nameServers) => {
         if (err) {
-            console.error(`Error fetching WHOIS data for ${domain}:`, err);
-            callback('Unknown Registrar');
+            console.error(`Error fetching name servers for ${domain}:`, err);
+            callback([]);
             return;
         }
-
-        console.log(`WHOIS data for ${domain}:`, data); // Log the entire WHOIS data
-
-        // Extract registrar information (handles variations like "Sponsoring Registrar")
-        const registrarMatch = data.match(/(?:Registrar|Sponsoring Registrar):\s*(.+)/i);
-        if (registrarMatch) {
-            callback(registrarMatch[1].trim());
-        } else {
-            callback('No registrar information found.');
-        }
+        console.log(`Name Servers for ${domain}:`, nameServers);
+        callback(nameServers);
     });
 }
+
+// Function to fetch registrar information with caching and rate limit protection
+function fetchRegistrar(domain, callback) {
+    // Check the cache first
+    if (whoisCache.has(domain)) {
+        return callback(whoisCache.get(domain));
+    }
+
+    const now = Date.now();
+    const delay = Math.max(0, 1000 - (now - lastWhoisRequestTime)); // 1-second delay to prevent rate limit
+
+    setTimeout(() => {
+        whois.lookup(domain, (err, data) => {
+            lastWhoisRequestTime = Date.now(); // Update the last request time
+
+            // Handle rate limit exceeded or any error
+            if (err || data.includes('Rate limit exceeded')) {
+                console.error(`WHOIS rate limit exceeded for ${domain}. Try again later.`);
+                callback('WHOIS rate limit exceeded. Please try again later.');
+                return;
+            }
+
+            // Extract registrar information
+            const registrarMatch = data.match(/Registrar:\s*(.+)/i);
+            const registrar = registrarMatch ? registrarMatch[1].trim() : 'No registrar information found.';
+
+            // Store result in cache to avoid querying again
+            whoisCache.set(domain, registrar);
+            callback(registrar);
+        });
+    }, delay);  // Add the delay between WHOIS requests
+}
+
+// In-memory cache for WHOIS data to avoid repeated lookups
+const whoisCache = new Map();
+
+// Timestamp to track when the last WHOIS request was made
+let lastWhoisRequestTime = 0;
 
 // Function to fetch hosting provider based on the name server
 function fetchHostingProvider(nameServer) {
