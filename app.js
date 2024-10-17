@@ -82,41 +82,41 @@ function fetchRegistrar(domain, callback) {
     });
 }
 
-// Function to fetch hosting provider based on the name server and return provider with a help link
+// Function to fetch hosting provider based on the name server and return provider with a help link for adding CNAME records
 function fetchHostingProvider(nameServer) {
     // Convert nameServer to lowercase for case-insensitive matching
     const ns = nameServer.toLowerCase();
 
-    // Define a map of hosting providers to their DNS record help documentation URLs
+    // Define a map of hosting providers to their CNAME record help documentation URLs
     const helpDocs = {
-        'Amazon Web Services (AWS)': 'https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating.html',
-        'Cloudflare': 'https://developers.cloudflare.com/dns/manage-dns-records/',
-        'DigitalOcean': 'https://docs.digitalocean.com/products/networking/dns/how-to/manage-records/',
-        'GoDaddy': 'https://www.godaddy.com/help/add-a-dns-record-19238',
-        'Google Cloud DNS': 'https://cloud.google.com/dns/docs/records',
-        'Bluehost': 'https://www.bluehost.com/help/article/dns-records-how-to-edit-dns-in-your-bluehost-account',
-        'HostGator': 'https://www.hostgator.com/help/article/dns-management-in-the-customer-portal',
-        'Namecheap': 'https://www.namecheap.com/support/knowledgebase/article.aspx/9602/33/how-do-i-set-up-dns-records-for-my-domain',
-        'Microsoft Azure': 'https://learn.microsoft.com/en-us/azure/dns/dns-getstarted-portal',
-        'OVH': 'https://docs.ovh.com/gb/en/domains/web_hosting_how_to_edit_my_dns_zone/',
-        'Linode': 'https://www.linode.com/docs/guides/dns-records-an-introduction/',
-        'DreamHost': 'https://help.dreamhost.com/hc/en-us/articles/216016197-Viewing-DNS-Records',
-        'SiteGround': 'https://www.siteground.com/kb/how_to_set_your_dns_records/',
+        'Amazon Web Services (AWS)': 'https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating.html#resource-record-sets-creating-cname',
+        'Cloudflare': 'https://developers.cloudflare.com/dns/manage-dns-records/create-dns-records#add-a-cname-record',
+        'DigitalOcean': 'https://docs.digitalocean.com/products/networking/dns/how-to/manage-records/#cname-record',
+        'GoDaddy': 'https://www.godaddy.com/help/add-a-cname-record-19236',
+        'Google Cloud DNS': 'https://cloud.google.com/dns/docs/records/define-records#cname',
+        'Bluehost': 'https://www.bluehost.com/help/article/how-to-create-a-cname-record',
+        'HostGator': 'https://www.hostgator.com/help/article/how-do-i-create-cname-records',
+        'Namecheap': 'https://www.namecheap.com/support/knowledgebase/article.aspx/9727/2237/how-do-i-set-up-a-cname-record-for-my-domain',
+        'Microsoft Azure': 'https://learn.microsoft.com/en-us/azure/dns/dns-cname-records',
+        'OVH': 'https://docs.ovh.com/gb/en/domains/web_hosting_how_to_edit_my_dns_zone/#cname-record',
+        'Linode': 'https://www.linode.com/docs/guides/dns-records-an-introduction/#cname-records',
+        'DreamHost': 'https://help.dreamhost.com/hc/en-us/articles/216031547-CNAME-records-overview',
+        'SiteGround': 'https://www.siteground.com/kb/how_to_set_your_dns_records/#CNAME',
         'WP Engine': 'https://wpengine.com/support/dns/',
         '1&1 IONOS': 'https://www.ionos.com/help/domains/configuring-dns-records-for-your-domain/',
-        'Hetzner': 'https://docs.hetzner.com/dns-console/general/dns-management/',
-        'Vultr': 'https://www.vultr.com/docs/how-to-manage-dns-records-in-vultr/',
-        'Fastly': 'https://developer.fastly.com/learning/concepts/dns/',
-        'Netlify': 'https://docs.netlify.com/domains-https/custom-domains/configure-external-dns/',
-        'Vercel': 'https://vercel.com/docs/concepts/projects/domains/configure-a-domain',
-        'Rackspace': 'https://support.rackspace.com/how-to/managing-your-dns-records-in-the-cloud-control-panel/',
+        'Hetzner': 'https://docs.hetzner.com/dns-console/general/dns-management/#create-cname-record',
+        'Vultr': 'https://www.vultr.com/docs/how-to-manage-dns-records-in-vultr/#cname',
+        'Fastly': 'https://developer.fastly.com/learning/concepts/dns/#cname',
+        'Netlify': 'https://docs.netlify.com/domains-https/custom-domains/configure-external-dns/#configure-a-cname-record',
+        'Vercel': 'https://vercel.com/docs/concepts/projects/domains/configure-a-domain#2.-add-the-cname-record',
+        'Rackspace': 'https://support.rackspace.com/how-to/create-a-cname-record/',
         'Akamai': 'https://community.akamai.com/customers/s/article/DNS-Management-Overview?language=en_US',
         'Pantheon': 'https://pantheon.io/docs/dns',
-        'Liquid Web': 'https://www.liquidweb.com/kb/manage-dns-records-in-cpanel/',
-        'Oracle Dyn': 'https://help.dyn.com/standard-dns-record-types/',
-        'Yahoo.com': 'https://help.smallbusiness.yahoo.net/s/article/SLN20450',
-        'Porkbun': 'https://kb.porkbun.com/article/92-how-to-set-your-dns-records',
-        'Fleek': 'https://docs.fleek.co/hosting/domain-management/',
+        'Liquid Web': 'https://www.liquidweb.com/kb/manage-dns-records-in-cpanel/#cname-record',
+        'Oracle Dyn': 'https://help.dyn.com/standard-dns-record-types/#CNAME',
+        'Yahoo.com': 'https://help.smallbusiness.yahoo.net/s/article/SLN20581',
+        'Porkbun': 'https://kb.porkbun.com/article/20-how-to-add-a-cname-record',
+        'Fleek': 'https://docs.fleek.co/hosting/domain-management/#cname',
         // Add more providers and links as needed
     };
 
