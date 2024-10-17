@@ -80,92 +80,89 @@ callback('No registrar information found.');
 
 // Function to fetch hosting provider based on the name server
 function fetchHostingProvider(nameServer) {
-// Convert nameServer to lowercase for case-insensitive matching
-const ns = nameServer.toLowerCase();
+    // Convert nameServer to lowercase for case-insensitive matching
+    const ns = nameServer.toLowerCase();
 
-// Extended logic for hosting provider identification
-if (ns.includes('awsdns')) {
-return 'Amazon Web Services (AWS)';
-} else if (ns.includes('cloudflare')) {
-return 'Cloudflare';
-} else if (ns.includes('digitalocean')) {
-return 'DigitalOcean';
-} else if (ns.includes('domaincontrol')) {
-return 'GoDaddy';
-} else if (ns.includes('google')) {
-return 'Google Cloud DNS';
-} else if (ns.includes('bluehost')) {
-return 'Bluehost';
-} else if (ns.includes('hostgator')) {
-return 'HostGator';
-} else if (ns.includes('namecheap')) {
-return 'Namecheap';
-} else if (ns.includes('azure-dns')) {
-return 'Microsoft Azure';
-} else if (ns.includes('ovh')) {
-return 'OVH';
-} else if (ns.includes('linode')) {
-return 'Linode';
-} else if (ns.includes('dreamhost')) {
-return 'DreamHost';
-} else if (ns.includes('siteground')) {
-return 'SiteGround';
-} else if (ns.includes('wpengine')) {
-return 'WP Engine';
-} else if (ns.includes('1and1')) {
-return '1&1 IONOS';
-} else if (ns.includes('hetzner')) {
-return 'Hetzner';
-} else if (ns.includes('vultr')) {
-return 'Vultr';
-} else if (ns.includes('fastly')) {
-return 'Fastly';
-} else if (ns.includes('netlify')) {
-return 'Netlify';
-} else if (ns.includes('vercel')) {
-return 'Vercel';
-} else if (ns.includes('rackspace')) {
-return 'Rackspace';
-} else if (ns.includes('akamai')) {
-return 'Akamai';
-} else if (ns.includes('pantheon')) {
-return 'Pantheon';
-} else if (ns.includes('liquidweb')) {
-return 'Liquid Web';
-} else if (ns.includes('cloudsigma')) {
-return 'CloudSigma';
-} else if (ns.includes('kinsta')) {
-return 'Kinsta';
-} else if (ns.includes('heroku')) {
-return 'Heroku';
-} else if (ns.includes('inmotionhosting')) {
-return 'InMotion Hosting';
-} else if (ns.includes('scaleway')) {
-return 'Scaleway';
-} else if (ns.includes('openstack')) {
-return 'OpenStack';
-} else if (ns.includes('lightsail')) {
-return 'Amazon Lightsail';
-} else if (ns.includes('backblaze')) {
-return 'Backblaze';
-} else if (ns.includes('dreamcompute')) {
-return 'DreamCompute';
-} else if (ns.includes('vps')) {
-return 'VPS Hosting (Various)';
-} else if (ns.includes('exoscale')) {
-return 'Exoscale';
-} else if (ns.includes('porkbun')) {
-return 'Porkbun';
+    // Extended logic for hosting provider identification
+    if (ns.includes('awsdns')) {
+        return 'Amazon Web Services (AWS)';
+    } else if (ns.includes('cloudflare')) {
+        return 'Cloudflare';
+    } else if (ns.includes('digitalocean')) {
+        return 'DigitalOcean';
+    } else if (ns.includes('domaincontrol')) {
+        return 'GoDaddy';
+    } else if (ns.includes('google')) {
+        return 'Google Cloud DNS';
+    } else if (ns.includes('bluehost')) {
+        return 'Bluehost';
+    } else if (ns.includes('hostgator')) {
+        return 'HostGator';
+    } else if (ns.includes('namecheap')) {
+        return 'Namecheap';
+    } else if (ns.includes('azure-dns')) {
+        return 'Microsoft Azure';
+    } else if (ns.includes('ovh')) {
+        return 'OVH';
+    } else if (ns.includes('linode')) {
+        return 'Linode';
+    } else if (ns.includes('dreamhost')) {
+        return 'DreamHost';
+    } else if (ns.includes('siteground')) {
+        return 'SiteGround';
+    } else if (ns.includes('wpengine')) {
+        return 'WP Engine';
+    } else if (ns.includes('1and1')) {
+        return '1&1 IONOS';
+    } else if (ns.includes('hetzner')) {
+        return 'Hetzner';
     } else if (ns.includes('vultr')) {
         return 'Vultr';
-} else if (ns.includes('fleek')) {
-return 'Fleek';
-    } else if (ns.includes('yahoo')) {
-        return 'Yahoo.com';
-} else {
-return 'Unknown Provider';
+    } else if (ns.includes('fastly')) {
+        return 'Fastly';
+    } else if (ns.includes('netlify')) {
+        return 'Netlify';
+    } else if (ns.includes('vercel')) {
+        return 'Vercel';
+    } else if (ns.includes('rackspace')) {
+        return 'Rackspace';
+    } else if (ns.includes('akamai')) {
+        return 'Akamai';
+    } else if (ns.includes('pantheon')) {
+        return 'Pantheon';
+    } else if (ns.includes('liquidweb')) {
+        return 'Liquid Web';
+    } else if (ns.includes('cloudsigma')) {
+        return 'CloudSigma';
+    } else if (ns.includes('kinsta')) {
+        return 'Kinsta';
+    } else if (ns.includes('heroku')) {
+        return 'Heroku';
+    } else if (ns.includes('inmotionhosting')) {
+        return 'InMotion Hosting';
+    } else if (ns.includes('scaleway')) {
+        return 'Scaleway';
+    } else if (ns.includes('openstack')) {
+        return 'OpenStack';
+    } else if (ns.includes('lightsail')) {
+        return 'Amazon Lightsail';
+    } else if (ns.includes('backblaze')) {
+        return 'Backblaze';
+    } else if (ns.includes('dreamcompute')) {
+        return 'DreamCompute';
+    } else if (ns.includes('vps')) {
+        return 'VPS Hosting (Various)';
+    } else if (ns.includes('exoscale')) {
+        return 'Exoscale';
+    } else if (ns.includes('porkbun')) {
+        return 'Porkbun';
+    } else if (ns.includes('gandi')) {
+        return 'Gandi SAS'; // Adding Gandi hosting provider recognition
+    } else {
+        return 'Unknown Provider';
+    }
 }
-}
+
 
 
 // Start the server
