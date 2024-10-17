@@ -156,10 +156,10 @@ function fetchHostingProvider(nameServer) {
         return 'Exoscale';
     } else if (ns.includes('porkbun')) {
         return 'Porkbun';
-    } else if (ns.includes('vultr')) {
-        return 'Vultr';
     } else if (ns.includes('fleek')) {
         return 'Fleek';
+    } else if (ns.includes('yahoo')) {
+        return 'Yahoo.com';
     } else {
         return 'Unknown Provider';
     }
