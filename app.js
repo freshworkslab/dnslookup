@@ -192,6 +192,8 @@ function fetchHostingProvider(nameServer) {
         return { provider: 'DDoS-Guard', helpLink: helpDocs['DDoS-Guard'] };
     }    else if (ns.includes('host-h')) {
         return { provider: 'Hetzner Online', helpLink: helpDocs['Hetzner Online'] };
+    }     else if (ns.includes('mitdps')) {
+        return { provider: 'MIT Digital Preservation Services', helpLink: helpDocs['MIT Digital Preservation Services'] };
     }   else {
         return { provider: 'Unknown Provider', helpLink: '#' }; // No help link for unknown providers
     }
