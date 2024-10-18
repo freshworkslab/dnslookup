@@ -118,6 +118,7 @@ function fetchHostingProvider(nameServer) {
         'Porkbun': 'https://kb.porkbun.com/article/20-how-to-add-a-cname-record',
         'Fleek': 'https://docs.fleek.co/hosting/domain-management/#cname',
         'Wix.com': 'https://support.wix.com/en/article/managing-dns-records-in-your-wix-account',
+        'TransIP': 'https://www.transip.eu/knowledgebase/407-setting-a-cname-record/',
         // Add more providers and links as needed
     };
 
@@ -180,6 +181,8 @@ function fetchHostingProvider(nameServer) {
         return { provider: 'Fleek', helpLink: helpDocs['Fleek'] };
     } else if (ns.includes('wixdns')) {
         return { provider: 'Wix.com', helpLink: helpDocs['Wix.com'] };
+    }   else if (ns.includes('transip')) {
+        return { provider: 'TransIP', helpLink: helpDocs['TransIP'] };
     }   else {
         return { provider: 'Unknown Provider', helpLink: '#' }; // No help link for unknown providers
     }
