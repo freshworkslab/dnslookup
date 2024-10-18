@@ -177,7 +177,9 @@ function fetchHostingProvider(nameServer) {
         return { provider: 'Porkbun', helpLink: helpDocs['Porkbun'] };
     } else if (ns.includes('fleek')) {
         return { provider: 'Fleek', helpLink: helpDocs['Fleek'] };
-    } else {
+    } else if (ns.includes('WIXDNS')) {
+        return { provider: 'Wix.com', helpLink: helpDocs['Wix.com'] };
+    }   else {
         return { provider: 'Unknown Provider', helpLink: '#' }; // No help link for unknown providers
     }
 }
