@@ -94,7 +94,7 @@ function fetchHostingProvider(nameServer) {
         'DigitalOcean': 'https://docs.digitalocean.com/products/networking/dns/how-to/manage-records/#cname-record',
         'GoDaddy': 'https://www.godaddy.com/help/add-a-cname-record-19236',
         'Google Cloud DNS': 'https://cloud.google.com/dns/docs/records',
-        'Bluehost': 'https://www.bluehost.com/help/article/how-to-create-a-cname-record',
+        'Bluehost': 'https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries#add',
         'HostGator': 'https://www.hostgator.com/help/article/how-do-i-create-cname-records',
         'Namecheap': 'https://www.namecheap.com/support/knowledgebase/article.aspx/9727/2237/how-do-i-set-up-a-cname-record-for-my-domain',
         'Microsoft Azure': 'https://learn.microsoft.com/en-us/azure/dns/dns-cname-records',
