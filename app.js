@@ -117,7 +117,7 @@ function fetchHostingProvider(nameServer) {
         'Yahoo.com': 'https://help.smallbusiness.yahoo.net/s/article/SLN20581',
         'Porkbun': 'https://kb.porkbun.com/article/20-how-to-add-a-cname-record',
         'Fleek': 'https://docs.fleek.co/hosting/domain-management/#cname',
-        'Wix': 'https://support.wix.com/en/article/managing-dns-records-in-your-wix-account',
+        'Wix.com': 'https://support.wix.com/en/article/managing-dns-records-in-your-wix-account',
         // Add more providers and links as needed
     };
 
