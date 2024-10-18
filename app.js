@@ -135,7 +135,7 @@ function fetchHostingProvider(nameServer) {
         return { provider: 'Bluehost', helpLink: helpDocs['Bluehost'] };
     } else if (ns.includes('hostgator')) {
         return { provider: 'HostGator', helpLink: helpDocs['HostGator'] };
-    } else if (ns.includes('namecheap')) {
+    } else if (ns.includes('registrar-servers.com')) {
         return { provider: 'Namecheap', helpLink: helpDocs['Namecheap'] };
     } else if (ns.includes('azure-dns')) {
         return { provider: 'Microsoft Azure', helpLink: helpDocs['Microsoft Azure'] };
