@@ -120,6 +120,7 @@ function fetchHostingProvider(nameServer) {
         'Wix.com': 'https://support.wix.com/en/article/managing-dns-records-in-your-wix-account',
         'TransIP': 'https://www.transip.eu/knowledgebase/407-setting-a-cname-record/',
         'InMotion Hosting': 'https://www.inmotionhosting.com/support/product-guides/wordpress-hosting/central/domains/dns-management/#add/',
+        'DDoS-Guard': 'https://ddos-guard.net/tutorials/general/dns-configuration/',
         // Add more providers and links as needed
     };
 
@@ -186,6 +187,8 @@ function fetchHostingProvider(nameServer) {
         return { provider: 'TransIP', helpLink: helpDocs['TransIP'] };
     }   else if (ns.includes('inmotionhosting')) {
         return { provider: 'InMotion Hosting', helpLink: helpDocs['InMotion Hosting'] };
+    }    else if (ns.includes('dns-h')) {
+        return { provider: 'DDoS-Guard', helpLink: helpDocs['DDoS-Guard'] };
     }   else {
         return { provider: 'Unknown Provider', helpLink: '#' }; // No help link for unknown providers
     }
