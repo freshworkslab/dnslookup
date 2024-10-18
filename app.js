@@ -119,6 +119,7 @@ function fetchHostingProvider(nameServer) {
         'Fleek': 'https://docs.fleek.co/hosting/domain-management/#cname',
         'Wix.com': 'https://support.wix.com/en/article/managing-dns-records-in-your-wix-account',
         'TransIP': 'https://www.transip.eu/knowledgebase/407-setting-a-cname-record/',
+        'InMotion Hosting': 'https://www.inmotionhosting.com/support/product-guides/wordpress-hosting/central/domains/dns-management/#add/',
         // Add more providers and links as needed
     };
 
@@ -183,6 +184,8 @@ function fetchHostingProvider(nameServer) {
         return { provider: 'Wix.com', helpLink: helpDocs['Wix.com'] };
     }   else if (ns.includes('transip')) {
         return { provider: 'TransIP', helpLink: helpDocs['TransIP'] };
+    }   else if (ns.includes('inmotionhosting')) {
+        return { provider: 'InMotion Hosting', helpLink: helpDocs['InMotion Hosting'] };
     }   else {
         return { provider: 'Unknown Provider', helpLink: '#' }; // No help link for unknown providers
     }
