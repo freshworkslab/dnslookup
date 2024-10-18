@@ -121,6 +121,7 @@ function fetchHostingProvider(nameServer) {
         'TransIP': 'https://www.transip.eu/knowledgebase/407-setting-a-cname-record/',
         'InMotion Hosting': 'https://www.inmotionhosting.com/support/product-guides/wordpress-hosting/central/domains/dns-management/#add/',
         'DDoS-Guard': 'https://ddos-guard.net/tutorials/general/dns-configuration/',
+        'Hetzner Online': 'https://docs.hetzner.com/dns-console/dns/manage-records/managing-cname-records/',
         // Add more providers and links as needed
     };
 
@@ -189,6 +190,8 @@ function fetchHostingProvider(nameServer) {
         return { provider: 'InMotion Hosting', helpLink: helpDocs['InMotion Hosting'] };
     }    else if (ns.includes('dns-h')) {
         return { provider: 'DDoS-Guard', helpLink: helpDocs['DDoS-Guard'] };
+    }    else if (ns.includes('host-h')) {
+        return { provider: 'Hetzner Online', helpLink: helpDocs['Hetzner Online'] };
     }   else {
         return { provider: 'Unknown Provider', helpLink: '#' }; // No help link for unknown providers
     }
